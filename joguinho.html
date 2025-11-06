@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jogo do Reflexo com ESP32 </title>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+
+  <h1>Bem-vindos ao nosso site</h1>
+  <h2> Jogo do Reflexo (ESP32 + Tempo Real)</h2>
+
+
+  <button id="conectar"> Conectar ao Arduino</button>
+
+
+  <div id="mensagem">Aguardando conexão...</div>
+
+
+  <div class="tempo"> Tempo de reação: <span id="tempo">0</span> ms</div>
+  <div class="placar"> Acertos: <span id="acertos">0</span> |  Erros: <span id="erros">0</span></div>
+
+
+  <footer>© 2025 - Jogo do Reflexo com ESP32 </footer>
+
+
+  <script>
+    let port, reader, writer;
+    let acertos = 0;
+    let erros = 0;
+
+
+    document.getElementById("conectar").addEventListener("click", async () => {
+      try {
+        port = await navigator.serial.requestPort();
+        await port.open({ baudRate: 9600 });
+        reader = port.readable.getReader();
+        writer = port.writable.getWriter();
+        document.getElementById("mensagem").textContent = " Conectado! Aguardando o jogo...";
+        lerArduino();
+      } catch (e) {
+        alert("Erro ao conectar: " + e);
+      }
+    });
+
+
+    async function lerArduino() {
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        const texto = new TextDecoder().decode(value).trim();
+        console.log("Arduino:", texto);
+
+
+        if (texto.startsWith("TEMPO:")) {
+          const ms = parseInt(texto.split(":")[1]);
+          document.getElementById("tempo").textContent = ms;
+
+
+          if (ms > 100 && ms < 1000) {
+            document.getElementById("mensagem").textContent = " Você acertou!";
+            document.getElementById("mensagem").className = "acertou";
+            acertos++;
+          } else {
+            document.getElementById("mensagem").textContent = " Você errou!";
+            document.getElementById("mensagem").className = "errou";
+            erros++;
+          }
+
+
+          document.getElementById("acertos").textContent = acertos;
+          document.getElementById("erros").textContent = erros;
+        }
+
+
+        if (texto === "ERRO") {
+          document.getElementById("mensagem").textContent = " Você errou (clicou antes do LED)!";
+          document.getElementById("mensagem").className = "errou";
+          erros++;
+          document.getElementById("erros").textContent = erros;
+        }
+      }
+    }
+  </script>
+</body>
+</html>

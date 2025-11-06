@@ -1,0 +1,52 @@
+    body {
+      font-family: 'Poppins', sans-serif;
+      text-align: center;
+      background: #edf4fa;
+      color: #333;
+      padding: 20px;
+    }
+
+
+    h1 { color: #0077cc; }
+    h2 { color: #005fa3; }
+
+
+    #conectar {
+      background: #00a86b;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+
+
+    #mensagem {
+      font-size: 24px;
+      margin: 20px;
+      font-weight: bold;
+    }
+
+
+    .acertou { color: green; }
+    .errou { color: red; }
+
+
+    .placar {
+      font-size: 18px;
+      margin-top: 20px;
+    }
+
+
+    .tempo {
+      font-size: 20px;
+      color: #444;
+      margin-top: 10px;
+    }
+
+
+    footer {
+      margin-top: 40px;
+      color: #777;
+    }
